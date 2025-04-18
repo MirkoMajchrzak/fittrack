@@ -13,6 +13,13 @@ function App() {
   const [darkMode, setDarkMode] = useState(() => {
     return localStorage.getItem('dark') === 'true'
   })
+  
+  useEffect(() => {
+    const splash = document.getElementById('splashscreen')
+    if (splash) {
+      setTimeout(() => splash.remove(), 800) // ~0.8 Sek sichtbar
+    }
+  }, [])
 
   useEffect(() => {
     if (darkMode) {
