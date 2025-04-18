@@ -67,7 +67,7 @@ function GeraeteVerwalten() {
           placeholder="Neues Gerät z. B. Beincurl"
           value={neuerName}
           onChange={(e) => setNeuerName(e.target.value)}
-          className="w-full border p-2 rounded"
+          className="w-full border p-2 rounded text-black dark:text-black bg-white placeholder:text-black dark:placeholder:text-black"
         />
         <input
           type="file"
