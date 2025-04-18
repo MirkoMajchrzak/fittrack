@@ -8,6 +8,8 @@ import {
 function Dashboard() {
   const [eintraege, setEintraege] = useState([])
   const [bearbeiten, setBearbeiten] = useState(null)
+
+  // Lokale Bearbeitungszustände
   const [bearbeitenGeraet, setBearbeitenGeraet] = useState('')
   const [bearbeitenGewicht, setBearbeitenGewicht] = useState('')
   const [bearbeitenWiederholungen, setBearbeitenWiederholungen] = useState('')
@@ -50,11 +52,12 @@ function Dashboard() {
 
       {eintraege.length === 0 && <p>Keine Einträge vorhanden.</p>}
 
+      {/* Gruppierung nach Datum */}
       {Object.entries(
         eintraege.reduce((acc, eintrag, index) => {
           const datum = new Date(eintrag.datum).toLocaleDateString()
           if (!acc[datum]) acc[datum] = []
-          acc[datum].push({ ...eintrag, index })
+          acc[datum].push({ ...eintrag, index }) // index behalten für Bearbeitung
           return acc
         }, {})
       ).map(([datum, eintraegeAnDemTag]) => (
@@ -105,6 +108,7 @@ function Dashboard() {
                     <p className="mt-1 font-semibold">{eintrag.geraet}</p>
                     <p>🏋️ {eintrag.gewicht} kg</p>
                     <p>🔁 {eintrag.wiederholungen} Wiederholungen</p>
+
                     <div className="flex gap-4 mt-2 text-sm">
                       <button
                         onClick={() => handleBearbeiten(index)}
