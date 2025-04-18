@@ -2,16 +2,32 @@
 <html lang="de">
   <head>
     <meta charset="UTF-8" />
+
+    <!-- 🌙 Darkmode Sofort-Start -->
+    <script>
+      try {
+        const isDark = localStorage.getItem('darkMode') === 'true';
+        if (isDark) {
+          document.documentElement.classList.add('dark');
+        }
+      } catch (e) {}
+    </script>
+
+    <!-- 🧩 Manifest & Icons -->
     <link rel="manifest" href="/manifest.webmanifest" />
-    <link rel="icon" type="image/svg+xml" href="/public/favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="public/favicon.ico" />
     <meta name="theme-color" content="#10b981" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>Fittrack</title>
   </head>
   <body>
+    <!-- 🚀 Splashscreen -->
     <div id="splashscreen" style="position: fixed; inset: 0; background: rgb(152, 196, 253); z-index: 9999; display: flex; align-items: center; justify-content: center;">
       <img src="/pwa-512x512.png" alt="Splash" style="max-width: 200px;" />
     </div>
+
+    <!-- 🚀 App -->
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
