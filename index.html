@@ -5,12 +5,16 @@
 
     <!-- 🌙 Darkmode Sofort-Start -->
     <script>
-      try {
-        const isDark = localStorage.getItem('darkMode') === 'true';
-        if (isDark) {
-          document.documentElement.classList.add('dark');
-        }
-      } catch (e) {}
+      (function () {
+        try {
+          const isDark = localStorage.getItem('darkMode')
+          if (isDark === 'true') {
+            document.documentElement.classList.add('dark')
+          } else {
+            document.documentElement.classList.remove('dark')
+          }
+        } catch (e) {}
+      })()
     </script>
 
     <!-- 🧩 Manifest & Icons -->
