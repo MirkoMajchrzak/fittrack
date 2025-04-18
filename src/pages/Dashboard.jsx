@@ -8,8 +8,6 @@ import {
 function Dashboard() {
   const [eintraege, setEintraege] = useState([])
   const [bearbeiten, setBearbeiten] = useState(null)
-
-  // Lokale Bearbeitungszustände
   const [bearbeitenGeraet, setBearbeitenGeraet] = useState('')
   const [bearbeitenGewicht, setBearbeitenGewicht] = useState('')
   const [bearbeitenWiederholungen, setBearbeitenWiederholungen] = useState('')
@@ -18,79 +16,79 @@ function Dashboard() {
     setEintraege(loadTrainingseintraege())
   }, [])
 
-  const handleBearbeiten = (i) => {
-    const eintrag = eintraege[i]
-    setBearbeiten(i)
-    setBearbeitenGeraet(eintrag.geraet)
-    setBearbeitenGewicht(eintrag.gewicht)
-    setBearbeitenWiederholungen(eintrag.wiederholungen)
+  const handleBearbeiten = (index) => {
+    const e = eintraege[index]
+    setBearbeiten(index)
+    setBearbeitenGeraet(e.geraet)
+    setBearbeitenGewicht(e.gewicht)
+    setBearbeitenWiederholungen(e.wiederholungen)
   }
 
-  const handleSave = (i) => {
+  const handleSave = (index) => {
     const aktualisiert = {
-      ...eintraege[i],
+      ...eintraege[index],
       geraet: bearbeitenGeraet,
       gewicht: parseFloat(bearbeitenGewicht),
       wiederholungen: parseInt(bearbeitenWiederholungen),
     }
-
-    updateTrainingseintrag(i, aktualisiert)
+    updateTrainingseintrag(index, aktualisiert)
     setEintraege(loadTrainingseintraege())
     setBearbeiten(null)
   }
 
-  const handleDelete = (i) => {
+  const handleDelete = (index) => {
     if (confirm('Eintrag wirklich löschen?')) {
-      deleteTrainingseintrag(i)
+      deleteTrainingseintrag(index)
       setEintraege(loadTrainingseintraege())
     }
   }
+
+  // 🔁 Gruppiere Einträge nach Datum
+  const gruppiert = eintraege.reduce((acc, eintrag, index) => {
+    const datum = new Date(eintrag.datum).toLocaleDateString('de-DE')
+    if (!acc[datum]) acc[datum] = []
+    acc[datum].push({ ...eintrag, index })
+    return acc
+  }, {})
 
   return (
     <div>
       <h2 className="text-xl font-bold mb-4">📋 Deine Trainingseinträge</h2>
 
-      {eintraege.length === 0 && <p>Keine Einträge vorhanden.</p>}
+      {Object.keys(gruppiert).length === 0 && <p>Keine Einträge vorhanden.</p>}
 
-      {/* Gruppierung nach Datum */}
-      {Object.entries(
-        eintraege.reduce((acc, eintrag, index) => {
-          const datum = new Date(eintrag.datum).toLocaleDateString()
-          if (!acc[datum]) acc[datum] = []
-          acc[datum].push({ ...eintrag, index }) // index behalten für Bearbeitung
-          return acc
-        }, {})
-      ).map(([datum, eintraegeAnDemTag]) => (
+      {Object.entries(gruppiert).map(([datum, eintraegeAnTag]) => (
         <div key={datum} className="mb-6 max-w-2xl">
           <h3 className="text-lg font-semibold mb-2 border-b pb-1">📅 {datum}</h3>
+
           <ul className="space-y-4">
-            {eintraegeAnDemTag.map(({ index, ...eintrag }) => (
-              <li key={index} className="border rounded p-4 shadow">
-                {bearbeiten === index ? (
+            {eintraegeAnTag.map((eintrag) => (
+              <li key={eintrag.index} className="border rounded p-4 shadow">
+                {bearbeiten === eintrag.index ? (
                   <div className="space-y-2 mt-2">
                     <input
                       value={bearbeitenGeraet}
                       onChange={(e) => setBearbeitenGeraet(e.target.value)}
+                      className="w-full p-2 border rounded bg-white text-black dark:text-black"
                       placeholder="Gerät"
-                      className="border rounded p-2 text-black dark:text-black bg-white w-full"
                     />
                     <input
                       type="number"
                       value={bearbeitenGewicht}
                       onChange={(e) => setBearbeitenGewicht(e.target.value)}
+                      className="w-full p-2 border rounded bg-white text-black dark:text-black"
                       placeholder="Gewicht (kg)"
-                      className="border rounded p-2 text-black dark:text-black bg-white w-full"
                     />
                     <input
                       type="number"
                       value={bearbeitenWiederholungen}
                       onChange={(e) => setBearbeitenWiederholungen(e.target.value)}
+                      className="w-full p-2 border rounded bg-white text-black dark:text-black"
                       placeholder="Wiederholungen"
-                      className="border rounded p-2 text-black dark:text-black bg-white w-full"
                     />
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 mt-2">
                       <button
-                        onClick={() => handleSave(index)}
+                        onClick={() => handleSave(eintrag.index)}
                         className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
                       >
                         💾 Speichern
@@ -105,19 +103,19 @@ function Dashboard() {
                   </div>
                 ) : (
                   <>
-                    <p className="mt-1 font-semibold">{eintrag.geraet}</p>
+                    <p className="font-semibold">{eintrag.geraet}</p>
                     <p>🏋️ {eintrag.gewicht} kg</p>
                     <p>🔁 {eintrag.wiederholungen} Wiederholungen</p>
 
                     <div className="flex gap-4 mt-2 text-sm">
                       <button
-                        onClick={() => handleBearbeiten(index)}
+                        onClick={() => handleBearbeiten(eintrag.index)}
                         className="text-blue-600 hover:underline"
                       >
                         ✏️ Bearbeiten
                       </button>
                       <button
-                        onClick={() => handleDelete(index)}
+                        onClick={() => handleDelete(eintrag.index)}
                         className="text-red-500 hover:underline"
                       >
                         🗑️ Löschen
