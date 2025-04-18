@@ -40,6 +40,12 @@ function Verlauf() {
     setDaten(gefiltert)
   }, [auswahl, eintraege])
 
+  // 🌓 Theme-Abfrage
+  const isDark = document.documentElement.classList.contains('dark')
+  const axisColor = isDark ? '#ffffff' : '#000000'
+  const tooltipTextColor = isDark ? '#ffffff' : '#000000'
+  const tooltipBg = isDark ? '#1f2937' : '#ffffff'
+
   return (
     <div>
       <h2 className="text-xl font-bold mb-4">📈 Trainingsverlauf</h2>
@@ -64,12 +70,15 @@ function Verlauf() {
         <ResponsiveContainer width="100%" height={300}>
           <LineChart data={daten}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="datum" stroke="#000" />
-            <YAxis stroke="#000" />
+            <XAxis dataKey="datum" stroke={axisColor} />
+            <YAxis stroke={axisColor} />
             <Tooltip
-              contentStyle={{ backgroundColor: '#ffffff', borderColor: '#ccc', color: '#000' }}
-              labelStyle={{ color: '#000' }}
-              itemStyle={{ color: '#000' }}
+              contentStyle={{
+                backgroundColor: tooltipBg,
+                borderColor: '#ccc',
+              }}
+              labelStyle={{ color: tooltipTextColor }}
+              itemStyle={{ color: tooltipTextColor }}
             />
             <Line
               type="monotone"
